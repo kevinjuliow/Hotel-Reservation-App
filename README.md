@@ -23,8 +23,12 @@ This is a simple hotel reservation application built using Java's Swing and AWT 
 - **Make Reservation:** Once logged in, navigate to the reservation section to book a room.
 - **View/Edit Databases:** Access and modify the hotel as needed.
 
-## Contributor
-A Final Exam Group Project
+## Contributors
+A Final Exam Group Project Made by : 
+- Me
+- [Stevanus Ryan](https://github.com/stevanryan)
+- [Felicia Kireina](https://github.com/feliciakireina)
+- [Jordan Vincent](https://github.com/ZeroFairy)
 
 
 ## Previews
