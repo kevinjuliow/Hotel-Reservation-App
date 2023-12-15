@@ -1,19 +1,31 @@
 package Transylvania;
 
+import Transylvania.Classes.Hotel;
+import Transylvania.Classes.User;
 import Transylvania.pages.HomePage.HomeContent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.InputMismatchException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class env {
+
+    // User Data
+    public static User userData;
+
+    // Current Chosen Hotel
+    public static Hotel hotelData;
+    public static String hotelName;
+
+    // Hotel Data
+    public static java.util.List<Hotel> hotelListGlobal = null;
+
+    public static Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+    public static Cursor defaultCursor = Cursor.getDefaultCursor();
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static final String DARK_COLOR = "#1f1f1f";
     public static final String MAIN_COLOR = "#ffffff";
@@ -33,6 +45,8 @@ public class env {
     public static final int WINDOW_POST_Y = (int) (screenSize.getHeight() - FRAME_HEIGHT) / 2;
     public static final Font pixel36 = new Font("Segoe UI", Font.PLAIN, 36);
     public static final Font pixel36B = new Font("Segoe UI", Font.BOLD, 36);
+    public static final Font pixel32 = new Font("Segoe UI", Font.PLAIN, 32);
+    public static final Font pixel32B = new Font("Segoe UI", Font.BOLD, 32);
     public static final Font pixel28 = new Font("Segoe UI", Font.PLAIN, 28);
     public static final Font pixel28B = new Font("Segoe UI", Font.BOLD, 28);
     public static final Font pixel24 = new Font("Segoe UI", Font.PLAIN, 24);
@@ -127,6 +141,10 @@ public class env {
         image = new ImageIcon(image.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
         return image;
     }
+    
+    public static void LoadImageIcon(ImageIcon imageIcon, int w, int h) {
+        imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+    }
 
     public static void ActionListener(JButton component, Function<ActionEvent, Void> function) {
         component.addActionListener(new ActionListener() {
@@ -136,6 +154,35 @@ public class env {
             }
         });
     }
+    public static void RadioButtonListener(JRadioButton component, Function<ActionEvent, Void> function) {
+        component.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                function.apply(e);
+            }
+        });
+    }
+
+    public static class CursorPointerStyle implements MouseListener {
+        private Component component;
+
+        public CursorPointerStyle(Component component) {
+            this.component = component;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) { this.component.setCursor(env.handCursor); }
+
+        @Override
+        public void mousePressed(MouseEvent e) { this.component.setCursor(env.handCursor); }
+
+        @Override
+        public void mouseReleased(MouseEvent e) { this.component.setCursor(env.defaultCursor); }
+
+        @Override
+        public void mouseEntered(MouseEvent e) { this.component.setCursor(env.handCursor); }
+
+        @Override
+        public void mouseExited(MouseEvent e) { this.component.setCursor(env.defaultCursor); }
+    }
 }
-
-

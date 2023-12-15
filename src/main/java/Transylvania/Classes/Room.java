@@ -1,60 +1,65 @@
 package Transylvania.Classes;
 
-import java.util.Date;
+public class Room {
 
-public abstract class Room {
-    String roomId, type, hotelId;
-    Date checkIn, checkOut;
-    int price;
+    String roomType;
+    String checkIn, checkOut;
+    int roomCount, price, hotelId;
 
-    public Room(String roomId, String type, String hotelId, Date checkIn, Date checkOut) {
-        this.setRoomId(roomId);
-        this.setType(type);
+    public Room(String roomType, int roomCount, int hotelId, String checkIn, String checkOut, int price) {
+        this.setRoomType(roomType);
+        this.setRoomCount(roomCount);
         this.setHotelId(hotelId);
-        this.setCheckin(checkIn);
+        this.setCheckIn(checkIn);
         this.setCheckOut(checkOut);
+        this.setPrice(price);
     }
 
-    public String getRoomId() {
-        return roomId;
+    public String getRoomType() {
+        return roomType;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 
-    public String getType() {
-        return type;
+    public int getRoomCount() {
+        return roomCount;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRoomCount(int roomCount) {
+        this.roomCount = roomCount;
     }
 
-    public String getHotelId() {
+    public int getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(String hotelId) {
+    public void setHotelId(int hotelId) {
         this.hotelId = hotelId;
     }
 
-    public Date getCheckin() {
+    public String getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckin(Date checkin) {
-        this.checkIn = checkin;
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
     }
 
-    public Date getCheckOut() {
+    public String getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(Date checkOut) {
+    public void setCheckOut(String checkOut) {
         this.checkOut = checkOut;
     }
 
-    abstract int getPrice();
-    abstract void setPrice(int price);
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 }

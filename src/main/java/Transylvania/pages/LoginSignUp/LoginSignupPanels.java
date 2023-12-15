@@ -15,9 +15,14 @@ public class LoginSignupPanels {
         JPanel loginPanel = new JPanel(null);
         loginPanel.setBounds((env.FRAME_WIDTH / 2), 0, env.FRAME_WIDTH / 2, env.FRAME_HEIGHT);
 
+        NoScalingIcon transylvaniaLogo = new NoScalingIcon(env.LoadImage("assets/transylvania-logo.png", 120, 120));
+        JLabel logo = new JLabel(transylvaniaLogo);
+        logo.setBounds(265, 130, 120, 120);
+        loginPanel.add(logo);
+
         //Images
         NoScalingIcon closeImg = new NoScalingIcon(env.LoadImage("assets/x-regular-240.png", 36, 36));
-        NoScalingIcon minimizeImg = new NoScalingIcon(env.LoadImage("assets/minimize-button.png", 24, 6));
+        NoScalingIcon minimizeImg = new NoScalingIcon(env.LoadImage("assets/minimize-button.png", 20, 6));
 
         //Components
         JLabel emailLabel = new JLabel("Email");
@@ -54,7 +59,7 @@ public class LoginSignupPanels {
         signUpLabel.setBounds(272, 550, 200, 20);
 
         closeBtn.setBounds(loginPanel.getWidth() - 70, 20, 48, 48);
-        minimizeBtn.setBounds(loginPanel.getWidth() - 106, 24, 48, 48);
+        minimizeBtn.setBounds(loginPanel.getWidth() - 100, 24, 48, 48);
 
 
         //Backgrounds
@@ -110,7 +115,7 @@ public class LoginSignupPanels {
         JPanel imgPanel = new JPanel(null);
         imgPanel.setBounds(0, 0, env.FRAME_WIDTH / 2, env.FRAME_HEIGHT);
         //Images
-        NoScalingIcon imageIcon = new NoScalingIcon(env.LoadImage("assets/img.png", env.FRAME_WIDTH / 2, env.FRAME_HEIGHT));
+        NoScalingIcon imageIcon = new NoScalingIcon(env.LoadImage("assets/img.jpeg", env.FRAME_WIDTH / 2, env.FRAME_HEIGHT));
         //Components
         JLabel imageLabel = new JLabel(imageIcon);
         //Bounds
@@ -126,6 +131,7 @@ public class LoginSignupPanels {
 
         //Images
         NoScalingIcon closeImg = new NoScalingIcon(env.LoadImage("assets/x-regular-240.png", 36, 36));
+//        NoScalingIcon minimizeImg = new NoScalingIcon(env.LoadImage("assets/minimize-button.png", 20, 6));
 
         //Components
         JTextField emailTf = new JTextField();
@@ -172,7 +178,7 @@ public class LoginSignupPanels {
         loginLabel.setBounds(260, 616, 200, 20);
 
         closeBtn.setBounds(signUpPanel.getWidth() - 70, 20, 48, 48);
-//        minimizeBtn.setBounds(signUpPanel.getWidth() - 106 , 24 , 48 , 48);
+//        minimizeBtn.setBounds(signUpPanel.getWidth() - 100 , 24 , 48 , 48);
 
         //Background
         signupBtn.setBackground(Color.decode(env.NICE_RED));

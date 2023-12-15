@@ -1,5 +1,6 @@
 package Transylvania.pages.LoginSignUp;
 
+import Transylvania.pages.AdminPage.*;
 import Transylvania.Classes.User;
 import Transylvania.Main;
 import Transylvania.Validator.DataValidator;
@@ -12,8 +13,15 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 
+import static Transylvania.env.userData;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class LoginSignupPage extends JFrame {
+
     JButton loginBtn;
+    public static JFrame mainFrame ;
 
     public LoginSignupPage() {
         //Panels
@@ -49,18 +57,28 @@ public class LoginSignupPage extends JFrame {
                 DataValidator.checkIsEmpty(passwordInput.getText());
                 DataValidator.checkValidEmailFormat(emailInput.getText());
 
-                User userData = DBControls.findUserByEmail(emailInput.getText());
+                userData = DBControls.findUserByEmail(emailInput.getText());
                 if (userData != null && userData.getPassword().equals(passwordInput.getText())) {
-                    env.animate(imgPanel, new Point(-2000, 0), 20, 2);
-                    env.animate2(loginPanel, new Point(2000, 0), 20, 2, () -> {
-                        Main main = new Main("John Doe");
+                    if (userData.getType().equals("user")) {
+                        env.animate(imgPanel, new Point(-2000, 0), 20, 2);
+                        env.animate2(loginPanel, new Point(2000, 0), 20, 2, () -> {
+                            try {
+                                mainFrame = new Main(userData);
+                            } catch (IOException ex) {
+                                Logger.getLogger(LoginSignupPage.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            dispose();
+                        });
+                        return null;
+                    } else {
+                        //Ini harus ubah
+                        AdminPage admin = new AdminPage(userData);
                         dispose();
-                    });
-                    return null;
+                    }
                 }
 
                 JLabel errorInformationLabel = (JLabel) env.FindComponents(loginPanel, "errorInformationLabelLogin");
-                errorInformationLabel.setText("User with email " + emailInput.getText() + " isn't found, or wrong password?");
+                errorInformationLabel.setText("sorry, your password was incorrect. Please double-check your password.");
                 return null;
             } catch (IllegalArgumentException | InputMismatchException err) {
                 JLabel errorInformationLabel = (JLabel) env.FindComponents(loginPanel, "errorInformationLabelLogin");
@@ -76,7 +94,7 @@ public class LoginSignupPage extends JFrame {
 
         env.ActionListener(signUpBtn, (ActionEvent e) -> {
             try {
-                User userData = new User(newFullname.getText(), newEmail.getText(), newPassword.getText(), newPhoneNumber.getText());
+                User userData = new User(newFullname.getText(), newEmail.getText(), newPassword.getText(), newPhoneNumber.getText(), "user");
 
                 //data validation
                 DataValidator.checkIsEmpty(userData.getFullName());
@@ -135,21 +153,25 @@ public class LoginSignupPage extends JFrame {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                setCursor(env.handCursor);
                 signUpLabel.setForeground(Color.decode(env.NICE_RED));
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                setCursor(env.defaultCursor);
                 signUpLabel.setForeground(Color.BLACK);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                setCursor(env.handCursor);
                 signUpLabel.setForeground(Color.decode(env.NICE_RED));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                setCursor(env.defaultCursor);
                 signUpLabel.setForeground(Color.BLACK);
             }
         });
@@ -164,18 +186,33 @@ public class LoginSignupPage extends JFrame {
                 env.animate(loginPanel, new Point(env.FRAME_WIDTH / 2, 0), 20, 1);
 
                 //clear error text
-                JLabel errorInformationLabel = (JLabel) env.FindComponents(loginPanel, "errorInformationLabel");
+                JLabel errorInformationLabel = (JLabel) env.FindComponents(loginPanel, "errorInformationLabelLogin");
                 errorInformationLabel.setText("");
             }
 
             @Override
-            public void mousePressed(MouseEvent e) { loginLabel.setForeground(Color.decode(env.NICE_RED)); }
+            public void mousePressed(MouseEvent e) {
+                loginLabel.setForeground(Color.decode(env.NICE_RED));
+                setCursor(env.handCursor);
+            }
+
             @Override
-            public void mouseReleased(MouseEvent e) { loginLabel.setForeground(Color.BLACK); }
+            public void mouseReleased(MouseEvent e) {
+                loginLabel.setForeground(Color.BLACK);
+                setCursor(env.defaultCursor);
+            }
+
             @Override
-            public void mouseEntered(MouseEvent e) { loginLabel.setForeground(Color.decode(env.NICE_RED)); }
+            public void mouseEntered(MouseEvent e) {
+                loginLabel.setForeground(Color.decode(env.NICE_RED));
+                setCursor(env.handCursor);
+            }
+
             @Override
-            public void mouseExited(MouseEvent e) { loginLabel.setForeground(Color.BLACK); }
+            public void mouseExited(MouseEvent e) {
+                loginLabel.setForeground(Color.BLACK);
+                setCursor(env.defaultCursor);
+            }
         });
 
         JLabel minimizer = (JLabel) env.FindComponents(loginPanel, "minimizeBtn");

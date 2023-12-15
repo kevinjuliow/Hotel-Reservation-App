@@ -1,17 +1,39 @@
 package Transylvania.pages.PaymentPage;
 
-import Transylvania.style.RoundedBorder;
+import Transylvania.Classes.Hotel;
+import Transylvania.Classes.Room;
+import Transylvania.Classes.Transaction;
+import Transylvania.Classes.User;
+import Transylvania.Main;
+import Transylvania.database.DBControls;
 import Transylvania.env;
+import Transylvania.pages.Detail.HotelDetail;
+import Transylvania.pages.LoginSignUp.LoginSignupPage;
+import Transylvania.style.NoScalingIcon;
+import Transylvania.style.RoundedBorder;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Payment extends JFrame {
+    JPanel centerPanel;
 
-    public Payment() {
+    public Payment(Transaction trx) {
         // Panel
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -21,38 +43,26 @@ public class Payment extends JFrame {
         sidebar.setLayout(null);
         sidebar.setBounds(0, 0, 80, env.FRAME_HEIGHT);
         sidebar.setBackground(Color.decode(env.NICE_RED));
-        ImageIcon imageIconSideBar = new ImageIcon(Objects.requireNonNull(Payment.class.getClassLoader().getResource("assets/log-out-regular-240 (1).png")));
-        imageIconSideBar = new ImageIcon(imageIconSideBar.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH));
+        NoScalingIcon imageIconSideBar = new NoScalingIcon(env.LoadImage("assets/chevron-left-solid-240.png", 48, 48));
         JLabel icon = new JLabel(imageIconSideBar);
         icon.setBounds(16, 34, 48, 48);
         sidebar.add(icon);
-        icon.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.exit(0);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {}
-
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-
-            @Override
-            public void mouseExited(MouseEvent e) {}
+        env.MouseListener(icon, (MouseEvent e) -> {
+            HotelDetail hotelDetail = new HotelDetail(env.hotelData);
+            dispose();
+            return null;
         });
+        icon.addMouseListener(new env.CursorPointerStyle(icon));
 
         // Top bar
         JPanel topBar = new JPanel();
         topBar.setLayout(null);
         topBar.setBounds(80, 0, 1200, 80);
-        topBar.setBackground(Color.decode(env.TOPBAR_COLOR));
+//        topBar.setBackground(Color.decode(env.TOPBAR_COLOR));
+        topBar.setBackground(Color.decode(env.MAIN_COLOR));
 
         // Center Panel (Main Panel)
-        JPanel centerPanel = new JPanel();
+        centerPanel = new JPanel();
         centerPanel.setLayout(null);
         centerPanel.setBackground(Color.decode(env.MAIN_COLOR));
         centerPanel.setBounds(80, 80, 1200, 640);
@@ -81,35 +91,44 @@ public class Payment extends JFrame {
         checkInLabel.setForeground(Color.decode(env.LIGHT_GRAY));
         centerPanel.add(checkInLabel);
 
-        JLabel checkOutLabel = new JLabel("Check-in");
-        checkOutLabel.setBounds(300, 130, 100, 50);
+        JLabel lineBetween = new JLabel();
+        lineBetween.setBounds(215, 140, 20, 56);
+        Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.decode(env.DARK_COLOR));
+        lineBetween.setBorder(leftBorder);
+        centerPanel.add(lineBetween);
+
+        JLabel checkOutLabel = new JLabel("Check-out");
+        checkOutLabel.setBounds(250, 130, 100, 50);
         checkOutLabel.setFont(env.pixel16B);
         checkOutLabel.setForeground(Color.decode(env.LIGHT_GRAY));
         centerPanel.add(checkOutLabel);
 
-        JLabel checkInDate = new JLabel("December 25th 2023");
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMMM d', 'yyyy");
+
+        JLabel checkInDate = new JLabel(String.valueOf(LocalDate.parse(trx.getCheck_in(), inputFormatter).format(outputFormatter)));
         checkInDate.setBounds(48, 155, 200, 50);
         checkInDate.setFont(env.pixel16);
         checkInDate.setForeground(Color.decode(env.DARK_COLOR));
         centerPanel.add(checkInDate);
 
-        JLabel checkOutDate = new JLabel("January 1st 2023");
-        checkOutDate.setBounds(300, 155, 200, 50);
+        JLabel checkOutDate = new JLabel(String.valueOf(LocalDate.parse(trx.getCheck_out(), inputFormatter).format(outputFormatter)));
+        checkOutDate.setBounds(250, 155, 200, 50);
         checkOutDate.setFont(env.pixel16);
         checkOutDate.setForeground(Color.decode(env.DARK_COLOR));
         centerPanel.add(checkOutDate);
 
-        JLabel guestsLabel = new JLabel("Guests");
-        guestsLabel.setBounds(48, 200, 100, 50);
-        guestsLabel.setFont(env.pixel16B);
-        guestsLabel.setForeground(Color.decode(env.DARK_COLOR));
-        centerPanel.add(guestsLabel);
+        JLabel bookedByLabel = new JLabel("Room booked by");
+        bookedByLabel.setBounds(48, 200, 200, 50);
+        bookedByLabel.setFont(env.pixel16B);
+        bookedByLabel.setForeground(Color.decode(env.DARK_COLOR));
+        centerPanel.add(bookedByLabel);
 
-        JLabel guestCount = new JLabel("2 Guest(s)");
-        guestCount.setBounds(48, 228, 200, 50);
-        guestCount.setFont(env.pixel16);
-        guestCount.setForeground(Color.decode(env.DARK_COLOR));
-        centerPanel.add(guestCount);
+        JLabel names = new JLabel(env.userData.getFullName());
+        names.setBounds(48, 228, 200, 50);
+        names.setFont(env.pixel16);
+        names.setForeground(Color.decode(env.DARK_COLOR));
+        centerPanel.add(names);
 
         JLabel paymentMethodTitle = new JLabel("Payment method");
         paymentMethodTitle.setBounds(48, 270, 100, 50);
@@ -117,7 +136,7 @@ public class Payment extends JFrame {
         paymentMethodTitle.setForeground(Color.decode(env.LIGHT_GRAY));
         centerPanel.add(paymentMethodTitle);
 
-        JComboBox<String> paymentMethodBox = new JComboBox<>(new String[]{ "", "BCA", "BRI", "BNI", "BTN", "Mandiri", "PayPal", "Dana" });
+        JComboBox<String> paymentMethodBox = new JComboBox<>(new String[]{"BCA", "BRI", "BNI", "BTN", "Mandiri", "PayPal", "Dana"});
         paymentMethodBox.setBounds(48, 312, 300, 30);
         paymentMethodBox.setFont(env.pixel12);
 //        paymentMethodBox.setBackground(Color.decode(env.NICE_RED));
@@ -151,59 +170,81 @@ public class Payment extends JFrame {
         centerPanel.add(confirmButton);
 
         JLabel transactionDetailsTitle = new JLabel("Transaction details");
-        transactionDetailsTitle.setBounds(700, 80, 100, 50);
+        transactionDetailsTitle.setBounds(670, 80, 100, 50);
         transactionDetailsTitle.setFont(env.pixel12);
         transactionDetailsTitle.setForeground(Color.decode(env.LIGHT_GRAY));
         centerPanel.add(transactionDetailsTitle);
 
-
-        //Transaction Panel side
+        // Transaction panel side
         JPanel transactionPanel = new JPanel(null);
         transactionPanel.setBackground(Color.decode(env.MAIN_COLOR));
-        transactionPanel.setBounds(670 , 130 , 480 , 200);
+        transactionPanel.setBounds(670, 130, 480, 190);
         transactionPanel.setBorder(new RoundedBorder(40));
         centerPanel.add(transactionPanel);
 
         JLabel hotelTransactionLabel = new JLabel("Hotel");
-        hotelTransactionLabel.setBounds(20 , 8 , transactionPanel.getWidth()-10 , 20);
+        hotelTransactionLabel.setBounds(20, 14, transactionPanel.getWidth() - 10, 20);
         hotelTransactionLabel.setFont(env.pixel12);
         hotelTransactionLabel.setForeground(Color.decode(env.LIGHT_GRAY));
 
-        JLabel hotelNameLabel = new JLabel("The Beverly Hills Hotel");
-        hotelNameLabel.setBounds(21 , 24 , transactionPanel.getWidth()-10 , 20);
-        hotelNameLabel.setFont(env.pixel12);
-        hotelNameLabel.setForeground(Color.BLACK);
+//        String hotelName = "";
+//        for (int i = 0; i < env.hotelListGlobal.size(); i++) {
+//            if (env.hotelListGlobal.get(i).getHotelId().equals(trx.getHotelId())) {
+//                hotelName = env.hotelListGlobal.get(i).getHotelName();
+//                System.out.println(i + " " + hotelName);
+//            }
+//        }
+        System.out.println("INI HOTEL ID YA " + trx.getHotelId());
+        JLabel hotelNameLabel = new JLabel(env.hotelName);
+        hotelNameLabel.setBounds(21, 34, transactionPanel.getWidth() - 10, 20);
+        hotelNameLabel.setFont(env.pixel16);
+
+        Border bottomBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode(env.DARK_COLOR));
+        JLabel lineBottomOne = new JLabel();
+        lineBottomOne.setBounds(21, 60, 440, 5);
+        lineBottomOne.setBorder(bottomBorder);
 
         JLabel priceDetailLabel = new JLabel("Price Details");
-        priceDetailLabel.setBounds(21 , 55 , transactionPanel.getWidth()-10 , 20);
-        priceDetailLabel.setFont(env.pixel12B);
+        priceDetailLabel.setBounds(21, 70, transactionPanel.getWidth() - 10, 20);
+        priceDetailLabel.setFont(env.pixel16B);
 
-        JLabel stayingPrice = new JLabel("Rp 1.250.000 x 2 night(s)");
-        stayingPrice.setBounds(21 , 75 , 150 , 20);
+        //Date format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        //Days differences
+        int daysDifference = (int) LocalDate.parse(trx.getCheck_in(), formatter).until(LocalDate.parse(trx.getCheck_out(), formatter)).getDays();
+
+        JLabel stayingPrice = new JLabel("Rp" + trx.getTransactionPrice() + " x " + daysDifference + " night(s)");
+        stayingPrice.setBounds(21, 94, 150, 20);
         stayingPrice.setFont(env.pixel12);
 
-        JLabel stayingPriceVal = new JLabel("Rp 2.500.000");
-        stayingPriceVal.setBounds(370 , 75 , 120 , 20);
+        int paymentTotal = (trx.getTransactionPrice() * daysDifference);
+
+        JLabel stayingPriceVal = new JLabel("Rp" + NumberFormat.getNumberInstance(Locale.GERMAN).format(paymentTotal));
+        stayingPriceVal.setBounds(280, 94, 150, 20);
         stayingPriceVal.setFont(env.pixel12);
 
         JLabel taxLabel = new JLabel("Application Tax");
-        taxLabel.setBounds(21 , 92 , 150 , 20);
+        taxLabel.setBounds(21, 112, 150, 20);
         taxLabel.setFont(env.pixel12);
 
-        JLabel taxVal = new JLabel("Rp 10.000");
-        taxVal.setBounds(370 , 92 , 120 , 20);
+        JLabel lineBottomTwo = new JLabel();
+        lineBottomTwo.setBounds(21, 137, 440, 5);
+        lineBottomTwo.setBorder(bottomBorder);
+
+        JLabel taxVal = new JLabel("Rp" + NumberFormat.getNumberInstance(Locale.GERMAN).format(paymentTotal * 0.05));
+        taxVal.setBounds(280, 112, 150, 20);
         taxVal.setFont(env.pixel12);
 
         JLabel totalPriceLabel = new JLabel("Total price");
-        totalPriceLabel.setBounds(21 , 141 , 120 , 20);
-        totalPriceLabel.setFont(env.pixel12B);
+        totalPriceLabel.setBounds(21, 150, 120, 20);
+        totalPriceLabel.setFont(env.pixel16B);
 
-        JLabel totalPriceVal = new JLabel("Rp. 2.510.000");
-        totalPriceVal.setBounds(370 , 141 , 120 ,20);
-        totalPriceVal.setFont(env.pixel12B);
+        JLabel totalPriceVal = new JLabel("Rp" + NumberFormat.getNumberInstance(Locale.GERMAN).format(paymentTotal + (paymentTotal * 0.05)));
+        totalPriceVal.setBounds(280, 150, 150, 20);
+        totalPriceVal.setFont(env.pixel16B);
 
-
-        //Adding Transaction Panel
+        // Adding Transaction Panel
         transactionPanel.add(hotelTransactionLabel);
         transactionPanel.add(hotelNameLabel);
         transactionPanel.add(priceDetailLabel);
@@ -213,6 +254,8 @@ public class Payment extends JFrame {
         transactionPanel.add(taxVal);
         transactionPanel.add(totalPriceVal);
         transactionPanel.add(totalPriceLabel);
+        transactionPanel.add(lineBottomOne);
+        transactionPanel.add(lineBottomTwo);
 
         // Adding
         panel.add(sidebar);
@@ -220,26 +263,47 @@ public class Payment extends JFrame {
         panel.add(centerPanel);
 
         // Settings
-        setSize(env.FRAME_WIDTH,env.FRAME_HEIGHT);
+        setSize(env.FRAME_WIDTH, env.FRAME_HEIGHT);
         setContentPane(panel);
         setResizable(false);
         setLocation(env.WINDOW_POST_X, env.WINDOW_POST_Y);
         setUndecorated(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        //Action Listeners
+        //ConfirmButton
+
+        env.ActionListener(confirmButton, (ActionEvent e) -> {
+            panel.remove(centerPanel);
+            centerPanel = PaymentSuccess.PaymentSuccess();
+            panel.add(centerPanel);
+
+            Timer timer = new Timer(1000, (ActionEvent evt) -> {
+                panel.remove(centerPanel);
+                dispose();
+                try {
+                    trx.setPaymentMethod(paymentMethodBox.getSelectedItem().toString());
+                    DBControls.addTransaction(trx);
+                    String roomType = trx.getType().equals("Standard") ? "total_standard" : trx.getType().equals("Deluxe") ? "total_deluxe" : trx.getType().equals("Suite") ? "total_suite" : "";
+                    DBControls.updateRoomAvailability(String.valueOf(trx.getHotelId()), roomType, trx.getCountRoom());
+                    Main main = new Main(env.userData);
+                } catch (IOException ex) {
+                    Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+            repaint();
+            revalidate();
+            return null;
+        });
     }
 
-    class CustomRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            c.setBackground(Color.WHITE);
-            c.setForeground(Color.BLACK);
-            return c;
-        }
-    }
-
-    public static void main(String[] args) {
-        Payment payment = new Payment();
-        payment.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        env.userData = new User("Stevan Ryan", "stve88@gmail.com", "stevansss", "081392598030");
+//        Payment payment = new Payment(new Room("Suite", 1, "1", "14-12-2023", "16-12-2023", 1250000));
+//        payment.setVisible(true);
+//    }
 }
