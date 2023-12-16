@@ -33,6 +33,7 @@ A Final Exam Group Project Made by :
 
 ## Previews
 **Login / Signup View**
+<img src="./loginPreview.jpg" width="600" height="400">
 
 
 ## Acknowledgments
