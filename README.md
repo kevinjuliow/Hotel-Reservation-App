@@ -38,16 +38,13 @@ A Final Exam Group Project Made by :
 **Signup Preview**<br>
 <img src="./signupPreview.jpg" width="600" height="400">
 
-<br>
 **Home Page Preview**<br>
 <img src="./homePage.jpg" width="600" height="400">
 
-<br>
-**Hotel Details **<br>
+**Hotel Details**<br>
 <img src="./hotelDetails.jpg" width="600" height="400">
 
-<br>
-**Payment ** <br>
+**Payment** <br>
 <img src="./payment.jpg" width="600" height="400">
 
 
