@@ -32,7 +32,7 @@ A Final Exam Group Project Made by :
 
 
 ## Previews
-**Login / Signup View**
+**Login / Signup View**<br>
 <img src="./loginPreview.jpg" width="600" height="400">
 
 
